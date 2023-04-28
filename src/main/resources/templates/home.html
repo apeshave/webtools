@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Shopping Cart Home Page</title>
+  <link rel="stylesheet" th:href="@{/css/shopping-cart.css}" />
+</head>
+<body>
+<header>
+  <h1>Shopping Cart</h1>
+</header>
+<main>
+  <div class="cart">
+    <div class="cart-header">
+      <div class="cart-column cart-column-product">Product</div>
+      <div class="cart-column cart-column-price">Price</div>
+      <div class="cart-column cart-column-quantity">Quantity</div>
+      <div class="cart-column cart-column-total">Total</div>
+    </div>
+    <div class="cart-items">
+      <div th:each="item : ${cart}" class="cart-item">
+        <div class="cart-item-product" th:text="${item.product.name}"></div>
+        <div class="cart-item-price" th:text="${item.product.price}"></div>
+        <div class="cart-item-quantity" th:text="${item.quantity}"></div>
+        <div class="cart-item-total" th:text="${item.total}"></div>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-column cart-column-product"></div>
+      <div class="cart-column cart-column-price"></div>
+      <div class="cart-column cart-column-quantity">Total:</div>
+      <div class="cart-column cart-column-total" th:text="${total}"></div>
+    </div>
+    <form method="get" th:action="@{/cart/update/{cartId}(cartId=${cartId})}">
+      <button type="submit">Add New Item</button>
+    </form>
+  </div>
+</main>
+</body>
+</html>
