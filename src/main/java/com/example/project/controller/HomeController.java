@@ -12,7 +12,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,7 +72,7 @@ public class HomeController {
         if (null == customer) {
             return "redirect:/create-customer";
         } else {
-            List<CartItem> items = new ArrayList<>();
+            Set<CartItem> items = new HashSet<>();
             if (customer.getCart() != null) {
                 cart = cartRepository.findById(customer.getCart().getId()).get();
                 log.warn(Arrays.toString(cart.getItems().toArray()));

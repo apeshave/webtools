@@ -6,7 +6,9 @@ import com.example.project.dto.Product;
 import com.example.project.repository.CartItemRepository;
 import com.example.project.repository.CartRepository;
 import com.example.project.repository.ProductRepository;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,13 +38,21 @@ public class CartController {
 
     @PostMapping("/cart/update/{id}")
     public String saveCartItem(@PathVariable("id") Long id, @RequestParam("productId") Long productId, @ModelAttribute("cartItem") CartItem cartItem) {
-        cartItem.setProduct(productRepository.getProductById(productId));
-        cartItem = cartItemRepository.save(cartItem);
+        CartItem toBeCreated = new CartItem();
+        toBeCreated.setProduct(productRepository.getProductById(productId));
+        toBeCreated.setQuantity(cartItem.getQuantity());
         Cart cart = cartRepository.findById(id).get();
-        cart.getItems().add(cartItem);
-        double total = cart.getItems().stream().mapToDouble(item -> item.getTotal()).sum();
+        Set<CartItem> cartItems = cart.getItems();
+        if (null == cartItems)
+        {
+            cart.setItems(new HashSet<>());
+        }
+        toBeCreated.setCart(cart);
+        cartItemRepository.save(toBeCreated);
+        cartItems.add(toBeCreated);
+        double total = cartItems.stream().mapToDouble(CartItem::getTotal).sum();
         cart.setTotal(total);
-        cart = cartRepository.save(cart);
+        cartRepository.save(cart);
         return "redirect:/home";
     }
 }
